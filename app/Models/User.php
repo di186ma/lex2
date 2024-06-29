@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class user extends Model
 {
@@ -11,8 +13,8 @@ class user extends Model
         'last_name', 'first_name', 'middle_name',
         'phone_number', 'email', 'age', 'username', 'password',
     ];
-
-    public function queries()
+    use HasFactory;
+    public function queries(): HasMany
     {
         return $this->hasMany(query::class);
     }

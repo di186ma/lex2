@@ -13,13 +13,32 @@ class Query extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'admin_id',
+        'lawyer_id',
+        'query_text',
+    ];
+
+
     // Отношение принадлежности к администратору
     public function admin(): BelongsTo
     {
         return $this->belongsTo(Admin::class);
     }
+
     public function lawyers(): BelongsToMany
     {
         return $this->belongsToMany(Lawyer::class, 'query_assignments');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function lawyer(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

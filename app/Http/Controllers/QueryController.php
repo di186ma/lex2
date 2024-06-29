@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Models\Query;
+use App\Models\User;
+use App\Models\Admin;
+use App\Models\Lawyer;
+use Illuminate\Validation\Rule;
 
 class QueryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        return view('queries', ['queries' => Query::all()]);
+        $queries = Query::with('user', 'admin', 'lawyer')->get();
+        return view('queries.index', compact('queries'));
+    }
+
+    public function show($id)
+    {
+        $query = Query::with('user', 'admin', 'lawyer')->findOrFail($id);
+        return view('queries.show', compact('query'));
     }
 
     /**
@@ -21,7 +32,10 @@ class QueryController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::all();
+        $admins = Admin::all();
+        $lawyers = Lawyer::all();
+        return view('queries.create', compact('users', 'admins', 'lawyers'));
     }
 
     /**
@@ -29,38 +43,53 @@ class QueryController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'admin_id' => 'required|exists:admins,id',
+            'lawyer_id' => 'nullable|exists:lawyers,id',
+            'query_text' => 'required|string|max:255',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        return view('query', ['query' => Query::all()->Where('id', $id)->first]);
+        Query::create($validatedData);
+
+        return redirect()->route('queries.index')->with('success', 'Query created successfully!');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Query $query)
     {
-        //
+        $users = User::all();
+        $admins = Admin::all();
+        $lawyers = Lawyer::all();
+        return view('queries.edit', compact('query', 'users', 'admins', 'lawyers'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Query $query)
     {
-        //
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'admin_id' => 'required|exists:admins,id',
+            'lawyer_id' => 'nullable|exists:lawyers,id',
+            'query_text' => 'required|string|max:255',
+        ]);
+
+        $query->update($validatedData);
+
+        return redirect()->route('queries.index')->with('success', 'Query updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Query $query)
     {
-        //
+        $query->delete();
+
+        return redirect()->route('queries.index')->with('success', 'Query deleted successfully!');
     }
 }

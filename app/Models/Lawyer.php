@@ -16,4 +16,9 @@ class Lawyer extends Model
     {
         return $this->belongsToMany(Query::class, 'query_assignments');
     }
+
+//    public function query(): HasMany
+//    {
+//        return $this->hasMany(query::class);
+//    }
 }
