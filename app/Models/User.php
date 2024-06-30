@@ -11,7 +11,11 @@ class user extends Model
     protected $table = 'users';
     protected $fillable = [
         'last_name', 'first_name', 'middle_name',
-        'phone_number', 'email', 'age', 'username', 'password',
+        'phone_number', 'email', 'age', 'username',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
     use HasFactory;
     public function queries(): HasMany
