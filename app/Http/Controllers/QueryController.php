@@ -15,10 +15,34 @@ class QueryController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index()
+//    public function index(Request $request)
+//    {
+//        $perPage = $request->input('per_page', 10); // Количество элементов на странице по умолчанию
+//
+//        $queries = Query::with('user', 'admin', 'lawyer')
+//            ->paginate($perPage);
+//
+//        return view('queries.index', compact('queries'));
+//    }
+
+    public function index(Request $request)
     {
-        $queries = Query::with('user', 'admin', 'lawyer')->get();
+        $perPage = $request->session()->get('per_page', 10); // Получение количества элементов на странице из сессии или значение по умолчанию
+
+        $queries = Query::paginate($perPage);
+
         return view('queries.index', compact('queries'));
+    }
+
+    public function updatePerPage(Request $request)
+    {
+        $perPage = $request->input('per_page', 10); // Получение значения количества элементов на странице из запроса
+
+        // Сохранение значения количества элементов на странице в сессии
+        $request->session()->put('per_page', $perPage);
+
+        // Перенаправление пользователя обратно на страницу с запросами
+        return redirect()->route('queries.index');
     }
 
     public function show($id)

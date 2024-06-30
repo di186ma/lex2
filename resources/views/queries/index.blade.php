@@ -9,6 +9,18 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    <form action="{{ route('queries.updatePerPage') }}" method="POST">
+        @csrf
+        <label for="per_page">Items per page:</label>
+        <select name="per_page" id="per_page">
+            <option value="2" {{ session('per_page', 10) == 2 ? 'selected' : '' }}>2</option>
+            <option value="5" {{ session('per_page', 10) == 5 ? 'selected' : '' }}>5</option>
+            <option value="10" {{ session('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+            <option value="20" {{ session('per_page', 10) == 20 ? 'selected' : '' }}>20</option>
+        </select>
+        <button type="submit">Apply</button>
+    </form>
+
     <table border="1">
         <thead>
         <tr>
@@ -40,4 +52,12 @@
         @endforeach
         </tbody>
     </table>
+    <style>
+        /* Встроенные стили для изменения размера стрелок */
+        .pagination .page-link {
+            font-size: 20px; /* Размер текста стрелок */
+            padding: 10px 15px; /* Размер стрелок */
+        }
+    </style>
+    {{ $queries->appends(['per_page' => $queries->perPage()])->links('vendor.pagination.bootstrap-5') }}
 @endsection
