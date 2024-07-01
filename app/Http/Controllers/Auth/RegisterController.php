@@ -7,13 +7,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
     use RegistersUsers;
 
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/queries';
 
     public function __construct()
     {
@@ -39,17 +38,12 @@ class RegisterController extends Controller
         return User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
-            'middle_name' => $data['middle_name'],
+            'middle_name' => $data['middle_name'] ?? '',
             'phone_number' => $data['phone_number'],
             'email' => $data['email'],
             'age' => $data['age'],
             'username' => $data['username'],
             'password' => Hash::make($data['password']),
         ]);
-    }
-
-    protected function registered(Request $request, $user)
-    {
-        return redirect()->intended('/queries');
     }
 }
